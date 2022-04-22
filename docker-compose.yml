@@ -1,0 +1,77 @@
+version: '3'
+services:
+  db_source:
+    image: 'postgres:14.2'
+    container_name: lab_cdck_postgresql
+    hostname: db_source
+    environment:
+      POSTGRES_PASSWORD: example
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    networks:
+      vpc_poc_cdck:
+        ipv4_address: 172.26.0.2
+    volumes:
+      - type: bind
+        source: ./postgres/init
+        target: /docker-entrypoint-initdb.d
+      - type: bind
+        source: ./postgres/conf/postgresql.conf
+        target: /etc/postgresql/postgresql.conf
+    command: ["-c","config_file=/etc/postgresql/postgresql.conf"]
+  cdc:
+    image: 'debezium/server:1.8.1.Final'
+    container_name: lab_cdck_debezium
+    hostname: cdc
+    depends_on:
+      - db_source
+      - kafka-1
+    networks:
+      vpc_poc_cdck:
+        ipv4_address: 172.26.0.3
+    volumes:
+      - type: bind
+        source: ./debezium/conf
+        target: /debezium/conf
+      - type: bind
+        source: ./debezium/data
+        target: /debezium/data
+  kafka-1:
+    image: 'confluentinc/cp-server:7.1.0'
+    hostname: kafka-1
+    container_name: lab_cdck_kafka1
+    env_file:
+      - ./kafka/kafka.env
+    volumes:
+      - type: bind
+        source: ./kafka/update_run.sh
+        target: /tmp/update_run.sh
+    command: "bash -c 'if [ ! -f /tmp/update_run.sh ]; then echo \"ERROR: Did you forget the update_run.sh file that came with this docker-compose.yml file?\" && exit 1 ; else /tmp/update_run.sh && /etc/confluent/docker/run ; fi'"
+    networks:
+      vpc_poc_cdck:
+        ipv4_address: 172.26.0.5
+  jupyter-spark:
+    # image: 'jupyter/all-spark-notebook:spark-3.1.1'
+    image: 'jupyter/pyspark-notebook:spark-3.2.1'
+    container_name: lab_cdck_jupyter_spark
+    hostname: jupyter_spark
+    ports:
+      - '9888:8888'
+    environment:
+      - SPARK_MASTER=local
+      - SPARK_LOCAL_HOSTNAME=localhost
+    networks:
+      vpc_poc_cdck:
+        ipv4_address: 172.26.0.6
+    command: "start.sh jupyter lab --LabApp.token=''"
+    volumes:
+      - type: bind
+        source: ./jupyter_spark/work
+        target: /home/jovyan/work
+networks:
+  vpc_poc_cdck:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.26.0.0/16
+          gateway: 172.26.0.1
