@@ -38,11 +38,11 @@ Aqui um exemplo de como deixar o ambiente operacional para realizar alguns teste
 
 ### Pré-requisitos
 
-Todas as operações serão realizadas em plataformas que estão instaladas em containeres de Docker. Portanto, precisamos que o docker e o docker compose esteja instalado corretamente.
+Todas as operações serão realizadas em plataformas instaladas em containeres de Docker. Portanto, precisamos que o docker e o docker compose esteja instalado corretamente.
 
-[Aqui está o link da documentação do docker](https://docs.docker.com/compose/install/) para realizar a instalação.
+[Aqui está o link da documentação do Docker](https://docs.docker.com/compose/install/) para realizar a instalação.
 
-Para testar se a instalação está correta você pode usar o comando `docker-compose --version`. Você deve ver um resultado similar ao apresentado abaixo.
+Para testar se a instalação está correta, pode ser usado o comando `docker-compose --version`. Você deve ver um resultado similar ao apresentado abaixo.
 
 ```sh
    $ docker-compose --version
@@ -54,7 +54,7 @@ Para testar se a instalação está correta você pode usar o comando `docker-co
 
 1. Clone o repositório
    ```sh
-   git clone https://github.com/your_username_/Project-Name.git
+   git clone https://github.com/walmeidadf/cdc.git
    ```
 2. Construa e execute o aplicativo com o comando do Docker Compose na pasta do projeto.
    ```sh
@@ -79,9 +79,9 @@ Para testar a solução, pode ser usado um notebook através do JupyterLab da m�
 
 Será solicitado um token para acessar o ambiente. Use o seguinte comando para identificar o token:
 ```sh
-docker exec lab_cdck_jupyter_spark jupyter server list | grep token
+docker exec cdc_jupyter_spark jupyter server list | grep token
 ```
-Na pasta `work` terá alguns notebook que irão te guiar em alguns exemplos.
+Na pasta `work` existem alguns notebook que dão alguns exemplos de como testar a arquiettura.
 <p align="right">(<a href="#top">voltar ao início</a>)</p>
 
 
@@ -91,10 +91,13 @@ Na pasta `work` terá alguns notebook que irão te guiar em alguns exemplos.
 
 - [ ] Adicionar as referências
 - [ ] Documentar os notebooks para simplificar a navegação dos primeiros passos
+- [ ] Configurar o container do Jupyter para adicionar a biblioteca 
 - [ ] Fazer a documentação em inglês.
 - [ ] Adicionar novas fontes de dados
     - [ ] MySQL
     - [ ] MongoDB
+- [ ] Adicionar o lab com Apache Pulsar
+- [ ] Adicionar o lab com Redis
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -104,7 +107,7 @@ Na pasta `work` terá alguns notebook que irão te guiar em alguns exemplos.
 
 Wesley Almeida - [@walmeidadf](https://twitter.com/your_username) - walmeida@gmail.com
 
-Link do Projeto: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Link do Projeto: [https://github.com/walmeidadf/cdc](https://github.com/walmeidadf/cdc)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -116,6 +119,7 @@ Link do Projeto: [https://github.com/your_username/repo_name](https://github.com
 Algumas das páginas de documentação, artigos e posts que me ajudaram a desenvolver esse projeto:
 
 * [Debezium connector for PostgreSQL](https://debezium.io/documentation/reference/1.9/connectors/postgresql.html)
+* [Jupyter Notebook Python, Spark Stack](https://hub.docker.com/r/jupyter/pyspark-notebook)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
