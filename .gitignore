@@ -11,6 +11,7 @@ ipython_config.py
 # Delta Lake
 *.parquet
 _delta_log
+*.parquet.crc
 
 # Environments
 .env
