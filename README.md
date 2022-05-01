@@ -89,9 +89,10 @@ Na pasta `work` existem alguns notebook que dão alguns exemplos de como testar 
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Adicionar as referências
-- [ ] Documentar os notebooks para simplificar a navegação dos primeiros passos
-- [ ] Configurar o container do Jupyter para adicionar a biblioteca 
+- [x] Adicionar as referências
+- [x] Documentar os notebooks para simplificar a navegação dos primeiros passos
+- [x] Configurar o container do Jupyter para adicionar as bibliotecas Python
+- [ ] Criar os scritps Python em streaming
 - [ ] Fazer a documentação em inglês.
 - [ ] Adicionar novas fontes de dados
     - [ ] MySQL
