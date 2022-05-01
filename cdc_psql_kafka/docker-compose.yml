@@ -60,6 +60,7 @@ services:
     hostname: jupyter_spark
     ports:
       - '9888:8888'
+      - '4040:4040'
     environment:
       - SPARK_MASTER=local
       - SPARK_LOCAL_HOSTNAME=localhost
@@ -71,6 +72,9 @@ services:
       - type: bind
         source: ./jupyter_spark/work
         target: /home/jovyan/work
+      - type: bind
+        source: ./jupyter_spark/delta_lake
+        target: /delta_lake
 networks:
   vpc_cdc_pk:
     driver: bridge
