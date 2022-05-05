@@ -75,16 +75,15 @@ Para testar se a instalação está correta, pode ser usado o comando `docker-co
 <!-- USAGE EXAMPLES -->
 ## Uso
 
-Para testar a solução, pode ser usado um notebook através do JupyterLab da máquina `jupyter_spark` usando o link `http://jupyter_spark:8080`.
+Se você vai explorar o ambiente como um todo, basta acessar o ambiente do JupyterLab da máquina `jupyter_spark` usando o link `http://jupyter_spark:8080`.
 
-Será solicitado um token para acessar o ambiente. Use o seguinte comando para identificar o token:
-```sh
-docker exec cdc_jupyter_spark jupyter server list | grep token
-```
 Na pasta `work` existem alguns notebook que dão alguns exemplos de como testar a arquiettura.
 <p align="right">(<a href="#top">voltar ao início</a>)</p>
 
-
+Para executar o script em PySpark que faz a leitura dos tópicos do Kafka e grava os dados no Delta Lake, use o comando abaixo:
+```
+docker exec cdc_jupyter_spark sh -c "python3 ~/work/kafka-structured-streaming.py"
+```
 
 <!-- ROADMAP -->
 ## Roadmap
