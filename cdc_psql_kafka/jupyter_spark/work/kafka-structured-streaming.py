@@ -3,6 +3,7 @@ from pyspark.sql import functions as F
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 
 from delta.tables import *
+from collections import namedtuple
 
 import os
 import json
@@ -39,7 +40,10 @@ def main():
     num_partitions = 3
 
     # infer Kafka schema
-    topic_schema = infer_schema_json(spark, kafka_brokers, topic_name, num_partitions)
+    topic_schema_value = infer_schema_json(spark, "value", kafka_brokers, topic_name, num_partitions)
+    topic_schema_key = infer_schema_json(spark, "key", kafka_brokers, topic_name, num_partitions)
+    TopicSchema = namedtuple('TopicSchema', ['key', 'value'])
+    topic_schema = TopicSchema(key=topic_schema_key, value=topic_schema_value)
 
     # execute ETL pipeline
     data = extract_data(spark, kafka_brokers, topic_name)
@@ -82,7 +86,8 @@ def transform_data(df, topic_schema):
     :param topic_schema: Json Schema for kafka topic messages.
     :return: Transformed DataFrame.
     """
-    topic_schema = StructType.fromJson(json.loads(topic_schema))
+    topic_schema_key = StructType.fromJson(json.loads(topic_schema.key))
+    topic_schema_value = StructType.fromJson(json.loads(topic_schema.value))
 
     df_transformed = (
         df
@@ -93,8 +98,16 @@ def transform_data(df, topic_schema):
             F.expr("timestamp as created_at"),
             F.expr("string(key) as kafka_key"),
             "value")
-        .withColumn('value', F.from_json(F.col("value"), topic_schema))
-        .select('kafka_key', 'kafka_offset', 'created_at', 'value.payload.after.*'))
+        .withColumn('value', F.from_json(F.col("value"), topic_schema_value))
+        .withColumn('key_json', F.from_json(F.col("kafka_key"), topic_schema_key))
+        .select('kafka_key', 
+                'kafka_offset', 
+                'value.payload.op', 
+                'key_json.payload.id', 
+                'value.payload.after.first_name', 
+                'value.payload.after.last_name', 
+                'value.payload.after.email',
+                'created_at'))
 
     return df_transformed
 
@@ -124,6 +137,7 @@ def create_delta_table(spark, location):
         DeltaTable.createOrReplace(spark)
         .addColumn("kafka_key", "STRING")
         .addColumn("kafka_offset", "BIGINT")
+        .addColumn("op", "STRING")
         .addColumn("id", "BIGINT")
         .addColumn("first_name", "STRING")
         .addColumn("last_name", "STRING")
@@ -135,10 +149,11 @@ def create_delta_table(spark, location):
         .execute())
     return None
 
-def infer_schema_json(spark, kafka_brokers, topic_name, num_partitions):
+def infer_schema_json(spark, column, kafka_brokers, topic_name, num_partitions):
     """infer schema of a dataframe from kafka and return the schema on json format.
 
     :param spark: spark session
+    :param column: column that will infer the schema
     :param kafka_brokers: list of kafka broker hosts
     :param topic_name: string - the name of kafka topic
     :num_partitions: int - number of partitions of Kafka topic
@@ -163,15 +178,15 @@ def infer_schema_json(spark, kafka_brokers, topic_name, num_partitions):
 
     df_json = (
         # filter out empty values
-        tdf.withColumn("value", F.expr("string(value)"))
-        .filter(F.col("value").isNotNull())
+        tdf.withColumn(column, F.expr("string({})".format(column)))
+        .filter(F.col(column).isNotNull())
         # get latestecord
-        .select("key", F.expr("struct(offset, value) r"))
+        .select("key", F.expr("struct({}) r".format(column)))
         .groupBy("key").agg(F.expr("max(r) r")) 
-        .select("r.value"))
+        .select("r.{}".format(column)))
 
     # decode the json values
-    df_read = spark.read.json(df_json.rdd.map(lambda x: x.value), multiLine=True)
+    df_read = spark.read.json(df_json.rdd.map(lambda x: x[column]), multiLine=True)
 
     # drop corrupt records
     if "_corrupt_record" in df_read.columns:

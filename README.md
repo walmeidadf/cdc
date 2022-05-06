@@ -68,7 +68,7 @@ Para testar se a instalação está correta, pode ser usado o comando `docker-co
    172.26.0.6       jupyter_spark
    ```
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+<p align="right">(<a href="#top">voltar ao início</a>)</p>
 
 
 
@@ -91,7 +91,7 @@ docker exec cdc_jupyter_spark sh -c "python3 ~/work/kafka-structured-streaming.p
 - [x] Adicionar as referências
 - [x] Documentar os notebooks para simplificar a navegação dos primeiros passos
 - [x] Configurar o container do Jupyter para adicionar as bibliotecas Python
-- [ ] Criar os scritps Python em streaming
+- [x] Criar os scritps Python em streaming
 - [ ] Fazer a documentação em inglês.
 - [ ] Adicionar novas fontes de dados
     - [ ] MySQL
@@ -99,7 +99,7 @@ docker exec cdc_jupyter_spark sh -c "python3 ~/work/kafka-structured-streaming.p
 - [ ] Adicionar o lab com Apache Pulsar
 - [ ] Adicionar o lab com Redis
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+<p align="right">(<a href="#top">voltar ao início</a>)</p>
 
 
 <!-- CONTACT -->
@@ -109,17 +109,19 @@ Wesley Almeida - [@walmeidadf](https://twitter.com/your_username) - walmeida@gma
 
 Link do Projeto: [https://github.com/walmeidadf/cdc](https://github.com/walmeidadf/cdc)
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+<p align="right">(<a href="#top">voltar ao início</a>)</p>
 
 
 
 <!-- ACKNOWLEDGMENTS -->
 ## Referências
 
+Boa parte desse projeto tem uma contribuição inestimável do meu colega Egon Rosa Pereira.
+
 Algumas das páginas de documentação, artigos e posts que me ajudaram a desenvolver esse projeto:
 
 * [Debezium connector for PostgreSQL](https://debezium.io/documentation/reference/1.9/connectors/postgresql.html)
 * [Jupyter Notebook Python, Spark Stack](https://hub.docker.com/r/jupyter/pyspark-notebook)
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+<p align="right">(<a href="#top">voltar ao início</a>)</p>
 
