@@ -60,8 +60,8 @@ Para testar se a instalação está correta, pode ser usado o comando `docker-co
    ```
 2. Construa e execute o aplicativo com o comando do Docker Compose na pasta do projeto.
    ```sh
-   cd change_data_catpure/cdc_psql_kafka
-   docker-compose up
+   cd cdc/cdc_psql_kafka
+   docker compose up
    ```
 3. Opcionalmente, adicione os registros para resolução de nomes dos serviços. Se você estiver usando Linux, seria o arquivo `/etc/hosts`.
    ```sh
