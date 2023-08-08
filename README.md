@@ -17,6 +17,9 @@ Para processar os eventos de mudanças que serão inseridos nos tópicos do clus
 
 ### Componentes da Solução
 
+Desenho da solução:
+![Desenho da arquitetura do Lab de Change Data Capture](/image/lab_cdc.png "Componentes da solução de CDC")
+
 Aqui está a lista dos projetos e bibliotecas que usamos para construir essa solução:
 
 * [PostreSQL v15.3](https://www.postgresql.org/)
@@ -26,6 +29,7 @@ Aqui está a lista dos projetos e bibliotecas que usamos para construir essa sol
 * [Delta Lake 2](https://delta.io/)
 * [JupyterLab](https://jupyter.org/)
 * [Docker Compose 2.15](https://www.docker.com/)
+
 
 <p align="right">(<a href="#top">voltar ao início</a>)</p>
 
