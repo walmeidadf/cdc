@@ -15,8 +15,8 @@ def main():
     """
 
     # Spark JAR packages
-    jar_packages = ["org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1",
-                    "io.delta:delta-core_2.12:1.2.1"]
+    jar_packages = ["org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.2",
+                    "io.delta:delta-core_2.12:2.3.0"]
 
     # Spark config params
     spark_config = {

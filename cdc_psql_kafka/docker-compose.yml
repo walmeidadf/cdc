@@ -1,7 +1,7 @@
-version: '3'
+version: '3.8'
 services:
   db_source:
-    image: 'postgres:14.2'
+    image: 'postgres:15.3'
     container_name: cdc_postgresql
     hostname: db_source
     environment:
@@ -22,7 +22,7 @@ services:
       - '-c'
       - config_file=/etc/postgresql/postgresql.conf
   cdc:
-    image: 'debezium/server:1.9.2.Final'
+    image: 'debezium/server:2.3.1.Final'
     container_name: cdc_debezium
     hostname: cdc
     depends_on:
@@ -39,7 +39,7 @@ services:
         source: ./debezium/data
         target: /debezium/data
   kafka-1:
-    image: 'confluentinc/cp-server:7.1.0'
+    image: 'confluentinc/cp-server:7.2.6'
     hostname: kafka-1
     container_name: cdc_kafka1
     env_file:
@@ -67,7 +67,7 @@ services:
     networks:
       vpc_cdc_pk:
         ipv4_address: 172.26.0.6
-    command: start.sh jupyter lab --LabApp.token=''
+    command: start.sh jupyter lab --LabApp.token='example'
     volumes:
       - type: bind
         source: ./jupyter_spark/work

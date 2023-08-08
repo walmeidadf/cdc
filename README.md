@@ -19,13 +19,13 @@ Para processar os eventos de mudanças que serão inseridos nos tópicos do clus
 
 Aqui está a lista dos projetos e bibliotecas que usamos para construir essa solução:
 
-* [PostreSQL](https://www.postgresql.org/)
-* [Debezium](https://debezium.io/)
-* [Apache Kafka](https://kafka.apache.org/)
-* [Apache Spark](https://spark.apache.org/)
-* [Delta Lake](https://delta.io/)
+* [PostreSQL v15.3](https://www.postgresql.org/)
+* [Debezium v2.3.1](https://debezium.io/)
+* [Apache Kafka v3.2.x](https://kafka.apache.org/)
+* [Apache Spark 3.3.2](https://spark.apache.org/)
+* [Delta Lake 2](https://delta.io/)
 * [JupyterLab](https://jupyter.org/)
-* [Docker](https://www.docker.com/)
+* [Docker Compose 2.15](https://www.docker.com/)
 
 <p align="right">(<a href="#top">voltar ao início</a>)</p>
 
@@ -34,7 +34,9 @@ Aqui está a lista dos projetos e bibliotecas que usamos para construir essa sol
 <!-- GETTING STARTED -->
 ## Getting Started
 
-Aqui um exemplo de como deixar o ambiente operacional para realizar alguns testes do ambiente de CDC.
+O objetivo foi desenvolver um projeto simples para servir como ponto de partida para estudar um projeto de Change Data Capture. O ambiente é operacional e contém exemplos para realizar a inserção de dados e identificar a captura dos dados e as transformações nos diferentes compontentes.
+
+O projeto é operacional para um laboratório, algumas das configurações aqui usadas para simplificar a confdiguração não devem ser usadas em um ambiente de produção, especialmente as configurações relacionadas a segurança da informação.
 
 ### Pré-requisitos
 
@@ -45,8 +47,8 @@ Todas as operações serão realizadas em plataformas instaladas em containeres 
 Para testar se a instalação está correta, pode ser usado o comando `docker-compose --version`. Você deve ver um resultado similar ao apresentado abaixo.
 
 ```sh
-   $ docker-compose --version
-   docker-compose version 1.29.2, build 1110ad01
+   $ docker compose version
+   Docker Compose version v2.15.1
    ```
 
 
@@ -58,10 +60,10 @@ Para testar se a instalação está correta, pode ser usado o comando `docker-co
    ```
 2. Construa e execute o aplicativo com o comando do Docker Compose na pasta do projeto.
    ```sh
-   cd cdc
+   cd change_data_catpure/cdc_psql_kafka
    docker-compose up
    ```
-3. Opcionalmente, altere os registros para resolução de nomes dos containeres. Se você estiver usando Linux, seria o arquivo `/etc/hosts`.
+3. Opcionalmente, adicione os registros para resolução de nomes dos serviços. Se você estiver usando Linux, seria o arquivo `/etc/hosts`.
    ```sh
    172.26.0.2       db_source
    172.26.0.5       kafka-1
@@ -75,9 +77,11 @@ Para testar se a instalação está correta, pode ser usado o comando `docker-co
 <!-- USAGE EXAMPLES -->
 ## Uso
 
-Se você vai explorar o ambiente como um todo, basta acessar o ambiente do JupyterLab da máquina `jupyter_spark` usando o link `http://jupyter_spark:8080`.
+Se você vai explorar o ambiente como um todo, basta acessar o ambiente do JupyterLab da máquina `jupyter_spark` usando o link `http://localhost:9888`.
 
-Na pasta `work` existem alguns notebook que dão alguns exemplos de como testar a arquiettura.
+Na área de navegação do sistema de arquivos, selecione a pasta `work`, onde existem alguns notebook que dão alguns exemplos de como testar a arquitetura. Existem comentários dentro dos notebooks que podem ajudar a entender melhor o propósito de cada um.
+
+Também é possível fazer um teste com leitura stream, foi feito um script para essa funcionalidade.
 
 Para executar o script em PySpark que faz a leitura dos tópicos do Kafka e grava os dados no Delta Lake, use o comando abaixo:
 ```

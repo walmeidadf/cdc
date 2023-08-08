@@ -1,5 +1,5 @@
 # Start from a core stack version
-FROM jupyter/pyspark-notebook:spark-3.2.1
+FROM jupyter/pyspark-notebook:spark-3.3.2
 # Install from requirements.txt file
 COPY --chown=${NB_UID}:${NB_GID} requirements.txt /tmp/
 RUN pip install --quiet --no-cache-dir --requirement /tmp/requirements.txt && \
