@@ -77,7 +77,7 @@ Para testar se a instalação está correta, pode ser usado o comando `docker-co
 <!-- USAGE EXAMPLES -->
 ## Uso
 
-Se você vai explorar o ambiente como um todo, basta acessar o ambiente do JupyterLab da máquina `jupyter_spark` usando o link `http://localhost:9888`.
+Se você vai explorar o ambiente como um todo, basta acessar o ambiente do JupyterLab da máquina `jupyter_spark` usando o link `http://localhost:9888`. A senha para acessar o notebook é `example`, pode ser alterada no arquivo `docker-compose.yaml`.
 
 Na área de navegação do sistema de arquivos, selecione a pasta `work`, onde existem alguns notebook que dão alguns exemplos de como testar a arquitetura. Existem comentários dentro dos notebooks que podem ajudar a entender melhor o propósito de cada um.
 
