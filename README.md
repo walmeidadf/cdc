@@ -1,135 +1,102 @@
-<div id="top"></div>
+# Change Data Catpture
 
-## Arquitetura streaming usando Kafka,  Spark e Debezium  
+Change Data Capture (CDC) is a data integration standard that allows the identification, capture and transmission of events that occurred in a transactional database.
 
-**Change Data Capture** (CDC) é um padrão de integração de dados que permite a identificação, captura e transmissão de eventos que ocorreram em uma banco de dados transacional.
+## Overview
 
-Existem algumas abordagens possíveis para o CDC, aqui iremos usar a ferramenta **Debezium**, um projeto open source  que usa a abordagem  Log-Base, ou seja, existe um conector específico para a fontes de dados no qual ele se conecta ao banco de dados para ler as alterações registradas no log.
+There are some possible approaches for CDC, here we will use the Debezium tool, an open source project that uses the Log-Base approach, that is, there is a specific connector for the data source in which it connects to the database to read changes recorded in the log.
 
-O Debezium possui conectores para diferentes fontes de dados (MySQL, MongoDB, PostgreSQL, SQL Server, Oracle). Aqui iniciaremos mostrando a integração com o **PostgreSQL**.
+Debezium has connectors for different data sources (MySQL, MongoDB, PostgreSQL, SQL Server, Oracle). Here we will start by showing the integration with PostgreSQL.
 
-Uma vez que uma operação de insert, delete ou update de uma tabela que está sendo monitorado é identificado e capturado, o Debezium pode transmitir essas informações para uma infraestrutura de mensageria. É bastante comum fazer essa integração a um cluster **Apache Kafka** por meio do Apache Kafka Connect. Recentemente, participei de dois projetos em que optaram usar uma plataforma de mensageria de nuvem, Amazon Kinesis e Azure Event Hubs. Também existe conectores para Google Cloud Pub/Sub e outras plataformas open source como Redis e Apache Pulsar.
+Once an insert, delete or update operation on a table being monitored is identified and captured, Debezium can transmit this information to a messaging infrastructure. It is quite common to do this integration with an Apache Kafka cluster through Apache Kafka Connect. Recently, I participated in two projects where they chose to use a cloud messaging platform, Amazon Kinesis and Azure Event Hubs. There are also connectors for Google Cloud Pub/Sub and other open source platforms such as Redis and Apache Pulsar.
 
-Nesse projeto usaremos um nó Kafka atuando no formato Kafka Raft (kraft), ou seja, sem depender um cluster Zookeeper e com um nó que é ao mesmo tempo controller e broker.
+In this project we will use a Kafka node operating in the Kafka Raft (kraft) format, that is, without depending on a Zookeeper cluster and with a node that is both controller and broker.
 
-Para processar os eventos de mudanças que serão inseridos nos tópicos do cluster Kafka, usaremos um nó **Apache Spark** Standalone onde iremos submeter um job escrito em PySpark e usando a abordagem Structured Streaming. Esse job irá ler as mensagens escritas em alguns dos tópicos, processar a informação, realizar algumas transformações e salvar os dados em um banco **Delta Lake**.
+To process the change events that will be inserted into the Kafka cluster topics, we will use an Apache Spark Standalone node where we will submit a job written in PySpark and using the Structured Streaming approach. This job will read the messages written in some of the topics, process the information, perform some transformations and save the data in a Delta Lake database.
 
+## Build with:
 
-### Componentes da Solução
+Lab environment:
 
-Desenho da solução:
-![Desenho da arquitetura do Lab de Change Data Capture](/image/lab_cdc.png "Componentes da solução de CDC")
+![Architecture design of the Change Data Capture Lab](/image/lab_cdc.png "Componentes da solução de CDC")
 
-Aqui está a lista dos projetos e bibliotecas que usamos para construir essa solução:
+- PostreSQL v15.3
+- Debezium v2.3.1
+- Apache Kafka v3.2.x
+- Apache Spark 3.3.2
+- JupyterLab
+- Docker Compose 2.15
 
-* [PostreSQL v15.3](https://www.postgresql.org/)
-* [Debezium v2.3.1](https://debezium.io/)
-* [Apache Kafka v3.2.x](https://kafka.apache.org/)
-* [Apache Spark 3.3.2](https://spark.apache.org/)
-* [Delta Lake 2](https://delta.io/)
-* [JupyterLab](https://jupyter.org/)
-* [Docker Compose 2.15](https://www.docker.com/)
-
-
-<p align="right">(<a href="#top">voltar ao início</a>)</p>
-
-
-
-<!-- GETTING STARTED -->
 ## Getting Started
 
-O objetivo foi desenvolver um projeto simples para servir como ponto de partida para estudar um projeto de Change Data Capture. O ambiente é operacional e contém exemplos para realizar a inserção de dados e identificar a captura dos dados e as transformações nos diferentes compontentes.
+This project serves as a stepping stone for learning about Change Data Capture (CDC).
 
-O projeto é operacional para um laboratório, algumas das configurações aqui usadas para simplificar a confdiguração não devem ser usadas em um ambiente de produção, especialmente as configurações relacionadas a segurança da informação.
+It provides a running environment with sample data inserts and demonstrates how different components capture and transform changes.
 
-### Pré-requisitos
+Important Note: While the project functions well for training purposes, some configurations (particularly security-related settings) are simplified for ease of use and should not be adopted in production environments.
 
-Todas as operações serão realizadas em plataformas instaladas em containeres de Docker. Portanto, precisamos que o docker e o docker compose esteja instalado corretamente.
+### Prerequisites:
 
-[Aqui está o link da documentação do Docker](https://docs.docker.com/compose/install/) para realizar a instalação.
+This project uses Docker containers. Please ensure you have Docker and Docker Compose installed correctly.
 
-Para testar se a instalação está correta, pode ser usado o comando `docker-compose --version`. Você deve ver um resultado similar ao apresentado abaixo.
+You can find installation instructions in the official Docker documentation [here](https://docs.docker.com/compose/install/)
+
+To confirm your installation is working, run the following command:
 
 ```sh
    $ docker compose version
    Docker Compose version v2.15.1
    ```
 
+### Installation
 
-### Instalalação
-
-1. Clone o repositório
+1. Clone the repository
    ```sh
    git clone https://github.com/walmeidadf/cdc.git
    ```
-2. Construa e execute o aplicativo com o comando do Docker Compose na pasta do projeto.
+2. Run the Docker Compose command in the project folder. to activate the containers with the systems..
    ```sh
    cd cdc/cdc_psql_kafka
    docker compose up
    ```
-3. Opcionalmente, adicione os registros para resolução de nomes dos serviços. Se você estiver usando Linux, seria o arquivo `/etc/hosts`.
+3. Optionally, add records for DNS file. If you are using Linux, this would be the `/etc/hosts` file.
    ```sh
    172.26.0.2       db_source
    172.26.0.5       kafka-1
    172.26.0.6       jupyter_spark
    ```
+## Usage
 
-<p align="right">(<a href="#top">voltar ao início</a>)</p>
+To explore the entire environment, simply visit `http://localhost:9888` on the `jupyter_spark` machine to access the JupyterLab interface. Use the password `example` to log in (you can change this in the docker-compose.yaml file).
 
+Within the file system navigation on Jupyter, head to the `work` folder. You'll find notebooks demonstrating how to test different aspects of the architecture. Each notebook includes comments to guide you.
 
+For test stream operations, a script has been created.
 
-<!-- USAGE EXAMPLES -->
-## Uso
+To run the PySpark script that reads Kafka topics and writes data to Delta Lake, use the following command:
 
-Se você vai explorar o ambiente como um todo, basta acessar o ambiente do JupyterLab da máquina `jupyter_spark` usando o link `http://localhost:9888`. A senha para acessar o notebook é `example`, pode ser alterada no arquivo `docker-compose.yaml`.
-
-Na área de navegação do sistema de arquivos, selecione a pasta `work`, onde existem alguns notebook que dão alguns exemplos de como testar a arquitetura. Existem comentários dentro dos notebooks que podem ajudar a entender melhor o propósito de cada um.
-
-Também é possível fazer um teste com leitura stream, foi feito um script para essa funcionalidade.
-
-Para executar o script em PySpark que faz a leitura dos tópicos do Kafka e grava os dados no Delta Lake, use o comando abaixo:
 ```
 docker exec cdc_jupyter_spark sh -c "python3 ~/work/kafka-structured-streaming.py"
 ```
-<p align="right">(<a href="#top">voltar ao início</a>)</p>
 
-<!-- ROADMAP -->
 ## Roadmap
 
-- [x] Adicionar as referências
-- [x] Documentar os notebooks para simplificar a navegação dos primeiros passos
-- [x] Configurar o container do Jupyter para adicionar as bibliotecas Python
-- [x] Criar os scritps Python em streaming
-- [ ] Fazer a documentação em inglês.
-- [ ] Adicionar novas fontes de dados
+- [ ] Add new data sources
     - [ ] MySQL
     - [ ] MongoDB
-- [ ] Adicionar o lab com Apache Pulsar
-- [ ] Adicionar o lab com Redis
-
-<p align="right">(<a href="#top">voltar ao início</a>)</p>
 
 
-<!-- CONTACT -->
-## Contato
+## Contact
 
 Wesley Almeida - [@walmeidadf](https://twitter.com/your_username) - walmeida@gmail.com
 
-Link do Projeto: [https://github.com/walmeidadf/cdc](https://github.com/walmeidadf/cdc)
+Project Link: [https://github.com/walmeidadf/cdc](https://github.com/walmeidadf/cdc)
 
-<p align="right">(<a href="#top">voltar ao início</a>)</p>
+## Acknowledgments
 
+A large part of this project has an invaluable contribution from my colleague Egon Rosa Pereira.
 
-
-<!-- ACKNOWLEDGMENTS -->
-## Referências
-
-Boa parte desse projeto tem uma contribuição inestimável do meu colega Egon Rosa Pereira.
-
-Algumas das páginas de documentação, artigos e posts que me ajudaram a desenvolver esse projeto:
+Some of the documentation pages, articles and posts that helped me develop this project:
 
 * [Debezium connector for PostgreSQL](https://debezium.io/documentation/reference/1.9/connectors/postgresql.html)
 * [Jupyter Notebook Python, Spark Stack](https://hub.docker.com/r/jupyter/pyspark-notebook)
-
-<p align="right">(<a href="#top">voltar ao início</a>)</p>
-
