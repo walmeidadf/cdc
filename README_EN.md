@@ -18,7 +18,7 @@ To process the change events that will be inserted into the Kafka cluster topics
 
 Lab environment:
 
-[Architecture design of the Change Data Capture Lab](/image/lab_cdc.png "Componentes da solução de CDC")
+![Architecture design of the Change Data Capture Lab](/image/lab_cdc.png "Componentes da solução de CDC")
 
 - PostreSQL v15.3
 - Debezium v2.3.1
